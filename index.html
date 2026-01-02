@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="pt-pt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Forjados em Aço e Sabedoria | Website Oficial</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700;900&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --gold: #d4af37;
+            --gold-bright: #f1d592;
+            --black: #050505;
+            --gray-dark: #121212;
+            --gray-light: #2a2a2a;
+            --text: #e0e0e0;
+            --transition: all 0.8s cubic-bezier(0.23, 1, 0.32, 1);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; scroll-behavior: smooth; cursor: none; }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--black);
+            color: var(--text);
+            overflow-x: hidden;
+            line-height: 1.8;
+        }
+
+        /* --- TELA DE CARREGAMENTO (ESTILO RITUAL) --- */
+        #loader {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: radial-gradient(circle at center, #1a1a1a 0%, #050505 100%);
+            z-index: 10000; display: flex; flex-direction: column; align-items: center; justify-content: center;
+            transition: opacity 1.2s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        #loader::before {
+            content: ""; position: absolute; width: 200%; height: 200%;
+            background: url('https://www.transparenttextures.com/patterns/asfalt-dark.png');
+            opacity: 0.05; animation: smoke 20s linear infinite;
+        }
+        .rune-container { position: relative; width: 100px; height: 100px; display: flex; align-items: center; justify-content: center; }
+        .rune {
+            width: 50px; height: 50px; border: 2px solid var(--gold);
+            transform: rotate(45deg); animation: rune-ritual 2s infinite ease-in-out;
+            box-shadow: 0 0 15px rgba(212, 175, 55, 0.5);
+        }
+        .rune-orbit {
+            position: absolute; width: 80px; height: 80px;
+            border: 1px dashed rgba(212, 175, 55, 0.3); border-radius: 50%;
+            animation: spin 4s linear infinite;
+        }
+        @keyframes rune-ritual {
+            0%, 100% { transform: rotate(45deg) scale(1); opacity: 0.5; }
+            50% { transform: rotate(45deg) scale(1.2); opacity: 1; box-shadow: 0 0 40px var(--gold); }
+        }
+        @keyframes spin { 100% { transform: rotate(360deg); } }
+        @keyframes smoke { 0% { transform: translate(0, 0); } 100% { transform: translate(-50px, -50px); } }
+
+        /* --- CURSOR --- */
+        .cursor {
+            width: 20px; height: 20px; border: 1px solid var(--gold); border-radius: 50%;
+            position: fixed; pointer-events: none; z-index: 9999;
+            transition: transform 0.1s ease; mix-blend-mode: difference;
+        }
+
+        /* --- UI DE SOM --- */
+        #sound-control {
+            position: fixed; bottom: 30px; left: 30px; z-index: 1000;
+            display: flex; align-items: center; gap: 15px;
+            cursor: pointer; opacity: 0.5; transition: var(--transition);
+        }
+        #sound-control:hover { opacity: 1; }
+        .sound-wave { display: flex; align-items: flex-end; gap: 2px; height: 15px; }
+        .bar { width: 2px; background: var(--gold); animation: pulse 1s infinite alternate; display: none; }
+        .playing .bar { display: block; }
+        @keyframes pulse { 0% { height: 5px; } 100% { height: 15px; } }
+
+        /* --- BACKGROUND --- */
+        #particles-js { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 1; pointer-events: none; }
+
+        /* --- HEADER --- */
+        header {
+            position: fixed; top: 0; width: 100%; padding: 1.5rem 5%;
+            display: flex; justify-content: space-between; align-items: center;
+            z-index: 1000; backdrop-filter: blur(15px); border-bottom: 1px solid rgba(212, 175, 55, 0.1);
+            background: rgba(5, 5, 5, 0.7);
+        }
+        .logo { font-family: 'Cinzel'; font-weight: 900; color: var(--gold); font-size: 1.4rem; text-decoration: none; letter-spacing: 2px; }
+        .nav-links a { color: var(--text); text-decoration: none; margin-left: 2rem; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 2px; transition: var(--transition); }
+        .nav-links a:hover { color: var(--gold); }
+
+        /* --- HERO (RESTAURADO) --- */
+        .hero {
+            height: 100vh; display: flex; align-items: center; padding: 0 10%; position: relative; z-index: 2;
+        }
+        .hero-text { flex: 1; }
+        .hero-text h1 { 
+            font-family: 'Cinzel'; font-size: clamp(2.5rem, 5vw, 4.5rem); line-height: 1.1; margin: 15px 0 25px;
+            background: linear-gradient(to right, #ffffff 0%, var(--gold) 100%);
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+            position: relative; display: inline-block;
+        }
+        /* GLITCH DE AÇO NO HOVER */
+        .hero-text h1:hover::after {
+            content: "Forjados em Aço \a e Sabedoria"; position: absolute; left: 2px; top: 0; width: 100%;
+            background: var(--black); clip-path: inset(45% 0 50% 0); white-space: pre;
+            animation: glitch 0.4s infinite linear alternate-reverse; color: var(--gold);
+            -webkit-text-fill-color: var(--gold);
+        }
+        @keyframes glitch { 0% { transform: translate(0); } 100% { transform: translate(4px, -3px); } }
+
+        .hero-visual { flex: 0.8; display: flex; justify-content: center; perspective: 1200px; }
+        .book-3d {
+            width: 300px; height: 450px; background: linear-gradient(135deg, #1a1a1a, #050505);
+            border: 1px solid rgba(212, 175, 55, 0.4); box-shadow: -30px 30px 60px rgba(0,0,0,0.7);
+            transform: rotateY(-20deg) rotateX(5deg); display: flex; flex-direction: column; align-items: center; justify-content: center;
+            transition: transform 0.1s ease-out; position: relative;
+        }
+
+        /* --- PERSONAGENS (PARALLAX) --- */
+        .char-section { position: relative; z-index: 2; padding: 100px 10%; display: flex; align-items: center; justify-content: space-between; gap: 40px; }
+        .char-card { flex: 1; position: relative; height: 500px; background: rgba(255,255,255,0.02); border: 1px solid rgba(212, 175, 55, 0.1); overflow: hidden; transition: var(--transition); }
+        .char-image { position: absolute; top: -10%; left: -10%; width: 120%; height: 120%; background-size: cover; background-position: center bottom; filter: grayscale(1) brightness(0.6); transition: transform 0.4s ease-out, filter 0.6s ease; }
+        .char-card:hover .char-image { filter: grayscale(0) brightness(1); }
+        .char-desc { position: absolute; bottom: 0; width: 100%; padding: 30px; background: linear-gradient(transparent, var(--black)); text-align: center; }
+
+        /* --- FAQ --- */
+        .faq { position: relative; z-index: 2; padding: 120px 20%; background: var(--black); }
+        .faq-item { border-bottom: 1px solid rgba(255,255,255,0.1); padding: 25px 0; cursor: pointer; }
+        .faq-answer { max-height: 0; overflow: hidden; transition: var(--transition); opacity: 0; color: #999; }
+        .faq-item.active .faq-answer { max-height: 200px; opacity: 1; padding-top: 15px; }
+
+        .btn-premium { padding: 1.2rem 3.5rem; background: var(--gold); color: #000; font-weight: 800; text-transform: uppercase; border: 1px solid var(--gold); cursor: pointer; transition: var(--transition); }
+        .btn-premium:hover { background: transparent; color: var(--gold); }
+        
+        footer { position: relative; z-index: 2; padding: 80px 10%; border-top: 1px solid rgba(255,255,255,0.05); text-align: center; }
+
+        @media (max-width: 1024px) {
+            .char-section { flex-direction: column; }
+            .hero { flex-direction: column; text-align: center; padding-top: 120px; height: auto; }
+        }
+    </style>
+</head>
+<body>
+
+    <div id="loader">
+        <div class="rune-container">
+            <div class="rune-orbit"></div>
+            <div class="rune"></div>
+        </div>
+        <p style="color:var(--gold); margin-top:30px; font-family:'Cinzel'; letter-spacing:5px; font-size:0.8rem;">A FORJAR O DESTINO</p>
+    </div>
+
+    <audio id="ambient-audio" src="ambient.mp3" loop></audio>
+    <audio id="hover-audio" src="hover.mp3"></audio>
+
+    <div class="cursor" id="cursor"></div>
+    <div id="particles-js"></div>
+
+    <div id="sound-control">
+        <div class="sound-wave"><div class="bar"></div><div class="bar"></div><div class="bar"></div></div>
+        <span id="sound-status">ATIVAR EXPERIÊNCIA</span>
+    </div>
+
+    <header>
+        <a href="#" class="logo">FORJADOS</a>
+        <nav class="nav-links">
+            <a href="#sobre">A Obra</a>
+            <a href="#personagens">Personagens</a>
+            <a href="#faq">FAQ</a>
+            <a href="#" style="border: 1px solid var(--gold); padding: 10px 20px;">Reservar</a>
+        </nav>
+    </header>
+
+    <section class="hero">
+        <div class="hero-text">
+            <span style="letter-spacing: 3px; font-size: 0.8rem; opacity: 0.6;">DISPONÍVEL EM 2026</span>
+            <h1>Forjados em Aço <br>e Sabedoria</h1>
+            <p style="font-size: 1.1rem; max-width: 550px; margin-bottom: 40px; opacity: 0.7;">Uma exploração profunda sobre a resiliência humana.</p>
+            <button class="btn-premium">Desbloquear Capítulo</button>
+        </div>
+        <div class="hero-visual">
+            <div class="book-3d" id="book">
+                <div style="border: 1px solid rgba(212, 175, 55, 0.3); width: 85%; height: 90%; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 20px;">
+                    <p style="font-family: 'Cinzel'; color: var(--gold); text-align: center; font-size: 1.4rem; font-weight: 900;">FORJADOS EM AÇO E SABEDORIA</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="char-section" id="personagens">
+        <div class="char-card" data-speed="0.05">
+            <div class="char-image" style="background-image: url('personagem1.png');"></div>
+            <div class="char-desc"><h3 style="font-family:'Cinzel'; color:var(--gold);">Alaric</h3><p style="font-size: 0.7rem; color: var(--gold); text-transform: uppercase;">O Mentor</p></div>
+        </div>
+        <div style="text-align: center; flex: 0.5;"><h2 style="font-family:'Cinzel'; color:var(--gold);">As Faces da Lenda</h2></div>
+        <div class="char-card" data-speed="-0.05">
+            <div class="char-image" style="background-image: url('personagem2.png');"></div>
+            <div class="char-desc"><h3 style="font-family:'Cinzel'; color:var(--gold);">Oskanor Agas</h3><p style="font-size: 0.7rem; color: var(--gold); text-transform: uppercase;">O Guerreiro</p></div>
+        </div>
+    </section>
+
+    <section class="faq" id="faq">
+        <h2 style="font-family: 'Cinzel'; text-align: center; margin-bottom: 60px; color: var(--gold);">Informações</h2>
+        <div class="faq-item">
+            <div style="display:flex; justify-content:space-between; font-family:'Cinzel';"><span>Edição de Colecionador?</span><span>+</span></div>
+            <div class="faq-answer">Sim, detalhes em folha de ouro e mapa exclusivo.</div>
+        </div>
+        <div class="faq-item">
+            <div style="display:flex; justify-content:space-between; font-family:'Cinzel';"><span>Data de Lançamento?</span><span>+</span></div>
+            <div class="faq-answer">Previsto para 2026.</div>
+        </div>
+    </section>
+
+    <footer>
+        <div class="logo">F.A.S</div>
+        <p style="font-size: 0.7rem; opacity: 0.3; margin-top: 20px;">© 2026 TODOS OS DIREITOS RESERVADOS.</p>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
+    <script>
+        // --- WEB AUDIO API COM ECO ---
+        const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        const ambientAudio = document.getElementById('ambient-audio');
+        const hoverAudio = document.getElementById('hover-audio');
+        
+        const ambientSource = audioCtx.createMediaElementSource(ambientAudio);
+        const hoverSource = audioCtx.createMediaElementSource(hoverAudio);
+        const delay = audioCtx.createDelay(0.5);
+        const feedback = audioCtx.createGain();
+
+        delay.delayTime.value = 0.3;
+        feedback.gain.value = 0.2;
+        
+        delay.connect(feedback); feedback.connect(delay);
+        ambientSource.connect(audioCtx.destination); ambientSource.connect(delay);
+        hoverSource.connect(audioCtx.destination); hoverSource.connect(delay);
+        delay.connect(audioCtx.destination);
+
+        // --- LOADER ---
+        window.addEventListener('load', () => {
+            setTimeout(() => {
+                document.getElementById('loader').style.opacity = '0';
+                setTimeout(() => document.getElementById('loader').style.display = 'none', 1200);
+            }, 2000);
+        });
+
+        // --- MOUSE & PARALLAX & CURSOR ---
+        const cursor = document.getElementById('cursor');
+        const book = document.getElementById('book');
+        document.addEventListener('mousemove', (e) => {
+            cursor.style.left = e.clientX + 'px';
+            cursor.style.top = e.clientY + 'px';
+
+            // Parallax Livro 3D
+            const x3d = (window.innerWidth / 2 - e.pageX) / 30;
+            const y3d = (window.innerHeight / 2 - e.pageY) / 30;
+            if(book) book.style.transform = `rotateY(${-x3d - 20}deg) rotateX(${y3d + 5}deg)`;
+
+            // Parallax Personagens
+            document.querySelectorAll('.char-card').forEach(card => {
+                const speed = card.getAttribute('data-speed');
+                const x = (window.innerWidth - e.pageX * speed) / 100;
+                const y = (window.innerHeight - e.pageY * speed) / 100;
+                card.querySelector('.char-image').style.transform = `translateX(${x}px) translateY(${y}px) scale(1.1)`;
+            });
+        });
+
+        // --- CONTROLO AUDIO ---
+        let isPlaying = false;
+        function toggleAudio() {
+            if (audioCtx.state === 'suspended') audioCtx.resume();
+            if (!isPlaying) { ambientAudio.play(); document.getElementById('sound-status').innerText = "SOM LIGADO"; document.getElementById('sound-control').classList.add('playing'); }
+            else { ambientAudio.pause(); document.getElementById('sound-status').innerText = "SOM DESLIGADO"; document.getElementById('sound-control').classList.remove('playing'); }
+            isPlaying = !isPlaying;
+        }
+        document.addEventListener('click', () => { if(!isPlaying) toggleAudio(); }, {once: true});
+        document.getElementById('sound-control').addEventListener('click', (e) => { e.stopPropagation(); toggleAudio(); });
+
+        // --- CLIQUES (VOLUME BAIXO) ---
+        document.querySelectorAll('button, a, .char-card, .faq-item, .logo').forEach(el => {
+            el.addEventListener('click', () => {
+                if (audioCtx.state === 'suspended') audioCtx.resume();
+                hoverAudio.currentTime = 0;
+                hoverAudio.volume = 0.07; // Volume reduzido como solicitado
+                hoverAudio.play();
+            });
+        });
+
+        document.querySelectorAll('.faq-item').forEach(item => {
+            item.addEventListener('click', () => {
+                item.classList.toggle('active');
+                item.querySelector('span:last-child').innerText = item.classList.contains('active') ? '-' : '+';
+            });
+        });
+
+        particlesJS("particles-js", { "particles": { "number": { "value": 40 }, "color": { "value": "#d4af37" }, "opacity": { "value": 0.2 }, "size": { "value": 2 }, "move": { "enable": true, "speed": 1, "direction": "top" } } });
+    </script>
+</body>
+</html>
